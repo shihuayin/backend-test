@@ -30,10 +30,10 @@ npm install
 docker run -d --name dynamodb-local -p 8000:8000 amazon/dynamodb-local
 
 # 3. 初始化表（创建 Programs 表）
-npm run init-table   # 预计输出： Programs table created.
+npm run init-table
 
 # 4. 导入示例数据
-npm run import-programs   # 将 data/example-programs.json 批量写入表
+npm run import-programs
 
 # 5. **开一个新终端窗口**，启动后端服务并保持运行
 npm run dev
@@ -54,7 +54,7 @@ npm test
    curl -X GET http://localhost:3000/programs
    ```
 
-   预期：`200`，返回数组，包含示例数据
+   预期：返回数组，包含示例数据
 
 2. **添加新程序 (Create)**
 
@@ -71,7 +71,7 @@ npm test
      }'
    ```
 
-   预期：`201`，响应 `{ "message": "Program added successfully" }`
+   预期：响应 `{ "message": "Program added successfully" }`
 
 3. **验证新增 (Read)**
 
@@ -89,10 +89,54 @@ npm test
      -d '{ "bestseller": true }'
    ```
 
-   预期：`200`，响应包含 `updated` 对象且 `bestseller: true`
+   预期：响应包含 `updated` 对象且 `bestseller: true`
 
 5. **删除程序 (Delete)**
    ```bash
    curl -X DELETE http://localhost:3000/programs/999
    ```
-   预期：`200`，响应 `{ "message": "Program with id 999 deleted." }`
+   预期：响应 `{ "message": "Program with id 999 deleted." }`
+
+## 使用 Postman 手动验证 CRUD 接口
+
+您还可以在 Postman 中按以下步骤手动创建并执行四个请求：
+
+1. **查询所有程序 (GET /programs)**
+
+   - Method: GET
+   - URL: `http://localhost:3000/programs`  
+     点击 **Send**，预期状态码 **200**，返回数组。
+
+2. **添加新程序 (POST /programs)**
+
+   - Method: POST
+   - URL: `http://localhost:3000/programs`
+   - Headers: `Content-Type: application/json`
+   - Body (raw JSON):
+     ```json
+     {
+       "id": 999,
+       "title": "Manual Test Program",
+       "topic": "demo",
+       "learningFormats": ["video"],
+       "bestseller": false,
+       "startDate": "2025-07-01"
+     }
+     ```
+     点击 **Send**，预期状态码 **201**，响应 `{ "message": "Program added successfully" }`。
+
+3. **更新程序 (PUT /programs/:id)**
+
+   - Method: PUT
+   - URL: `http://localhost:3000/programs/999`
+   - Headers: `Content-Type: application/json`
+   - Body (raw JSON):
+     ```json
+     { "bestseller": true }
+     ```
+     点击 **Send**，预期状态码 **200**，响应体包含 `updated` 对象且 `bestseller: true`。
+
+4. **删除程序 (DELETE /programs/:id)**
+   - Method: DELETE
+   - URL: `http://localhost:3000/programs/999`  
+     点击 **Send**，预期状态码 **200**，响应 `{ "message": "Program with id 999 deleted." }`。
