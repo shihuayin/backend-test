@@ -1,4 +1,3 @@
-````markdown
 # Junior Full Stack Backend Test
 
 This project provides a backend CRUD API for the Hult Ashridge admin dashboard, enabling CRUD operations on the `Programs` table. It includes automated tests and example data import scripts.
@@ -42,7 +41,6 @@ npm run dev
 # 6. In the original window, run automated tests (ensure CRUD logic passes)
 npm test
 ```
-````
 
 ---
 
