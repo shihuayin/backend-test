@@ -1,62 +1,64 @@
+````markdown
 # Junior Full Stack Backend Test
 
-本项目为 Hult Ashridge 管理面板提供后端 CRUD API，实现对 `Programs` 表的增删改查操作，并配有自动化测试和示例数据导入脚本。
+This project provides a backend CRUD API for the Hult Ashridge admin dashboard, enabling CRUD operations on the `Programs` table. It includes automated tests and example data import scripts.
 
-## 项目简介
+## Project Overview
 
-- 基于 Node.js + TypeScript 的 Express 后端
-- 使用 DynamoDB Local 存储数据
-- 提供 `GET`、`POST`、`PUT`、`DELETE` 四个接口操作 `Programs` 表
-- 自动化测试：Jest + Supertest 覆盖所有 CRUD 场景
-- 示例数据：从 `data/example-programs.json` 导入
+- Express backend with Node.js + TypeScript
+- Uses DynamoDB Local for data storage
+- Exposes `GET`, `POST`, `PUT`, and `DELETE` endpoints for the `Programs` table
+- Automated tests: Jest + Supertest covering all CRUD scenarios
+- Example data: Imported from `data/example-programs.json`
 
 ---
 
-## 环境要求
+## Requirements
 
 - Node.js v14+
 - npm
-- Docker（用于运行 DynamoDB Local）
+- Docker (for running DynamoDB Local)
 
 ---
 
-## 全流程命令（按顺序执行）
+## Full Workflow Commands (run in order)
 
 ```bash
-# 1. 安装依赖（项目根目录）
+# 1. Install dependencies (project root)
 npm install
 
-# 2. 启动本地 DynamoDB（后台运行即可）
+# 2. Start local DynamoDB (run in background)
 docker run -d --name dynamodb-local -p 8000:8000 amazon/dynamodb-local
 
-# 3. 初始化表（创建 Programs 表）
+# 3. Initialize the table (create Programs table)
 npm run init-table
 
-# 4. 导入示例数据
+# 4. Import example data
 npm run import-programs
 
-# 5. **开一个新终端窗口**，启动后端服务并保持运行
+# 5. **Open a new terminal window**, start the backend server and keep it running
 npm run dev
 
-# 6. 在原窗口运行自动化测试（确保 CRUD 逻辑通过）
+# 6. In the original window, run automated tests (ensure CRUD logic passes)
 npm test
 ```
+````
 
 ---
 
-## 手动验证 CRUD 接口（在原窗口执行）
+## Manual CRUD Testing (run in the original window)
 
-以下 `curl` 命令均在 **原终端窗口**（执行过 `npm test` 的同一窗口）运行；确保窗口  2 中的 `npm run dev` 服务仍在运行。
+Use the following `curl` commands in the **original terminal window** (where you ran `npm test`). Ensure the service started in window 2 (`npm run dev`) is still running.
 
-1. **查询所有程序 (Read)**
+1. **Read All Programs**
 
    ```bash
    curl -X GET http://localhost:3000/programs
    ```
 
-   预期：返回数组，包含示例数据
+   Expected: Returns an array containing the example data.
 
-2. **添加新程序 (Create)**
+2. **Create a New Program**
 
    ```bash
    curl -X POST http://localhost:3000/programs \
@@ -71,17 +73,17 @@ npm test
      }'
    ```
 
-   预期：响应 `{ "message": "Program added successfully" }`
+   Expected: Response `{ "message": "Program added successfully" }`.
 
-3. **验证新增 (Read)**
+3. **Verify Creation**
 
    ```bash
    curl -X GET http://localhost:3000/programs
    ```
 
-   预期：返回列表中包含 `id: 999` 的记录
+   Expected: The returned list includes the record with `id: 999`.
 
-4. **更新程序 (Update)**
+4. **Update a Program**
 
    ```bash
    curl -X PUT http://localhost:3000/programs/999 \
@@ -89,30 +91,35 @@ npm test
      -d '{ "bestseller": true }'
    ```
 
-   预期：响应包含 `updated` 对象且 `bestseller: true`
+   Expected: The response contains an `updated` object with `bestseller: true`.
 
-5. **删除程序 (Delete)**
+5. **Delete a Program**
+
    ```bash
    curl -X DELETE http://localhost:3000/programs/999
    ```
-   预期：响应 `{ "message": "Program with id 999 deleted." }`
 
-## 使用 Postman 手动验证 CRUD 接口
+   Expected: Response `{ "message": "Program with id 999 deleted." }`.
 
-您还可以在 Postman 中按以下步骤手动创建并执行四个请求：
+---
 
-1. **查询所有程序 (GET /programs)**
+## Manual Testing with Postman
+
+You can also manually create and execute the four requests in Postman:
+
+1. **GET /programs**
 
    - Method: GET
    - URL: `http://localhost:3000/programs`  
-     点击 **Send**，预期状态码 **200**，返回数组。
+     Click **Send**, expect status **200** and an array in the response.
 
-2. **添加新程序 (POST /programs)**
+2. **POST /programs**
 
    - Method: POST
    - URL: `http://localhost:3000/programs`
    - Headers: `Content-Type: application/json`
-   - Body (raw JSON):
+   - Body: (raw JSON)
+
      ```json
      {
        "id": 999,
@@ -123,20 +130,28 @@ npm test
        "startDate": "2025-07-01"
      }
      ```
-     点击 **Send**，预期状态码 **201**，响应 `{ "message": "Program added successfully" }`。
 
-3. **更新程序 (PUT /programs/:id)**
+   Click **Send**, expect status **201** and response `{ "message": "Program added successfully" }`.
+
+3. **PUT /programs/:id**
 
    - Method: PUT
    - URL: `http://localhost:3000/programs/999`
    - Headers: `Content-Type: application/json`
-   - Body (raw JSON):
+   - Body: (raw JSON)
+
      ```json
      { "bestseller": true }
      ```
-     点击 **Send**，预期状态码 **200**，响应体包含 `updated` 对象且 `bestseller: true`。
 
-4. **删除程序 (DELETE /programs/:id)**
+   Click **Send**, expect status **200** and a response containing an `updated` object with `bestseller: true`.
+
+4. **DELETE /programs/:id**
+
    - Method: DELETE
    - URL: `http://localhost:3000/programs/999`  
-     点击 **Send**，预期状态码 **200**，响应 `{ "message": "Program with id 999 deleted." }`。
+     Click **Send**, expect status **200** and response `{ "message": "Program with id 999 deleted." }`.
+
+```
+
+```
